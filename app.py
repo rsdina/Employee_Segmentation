@@ -37,14 +37,15 @@ st.set_page_config(
 
 
 @st.cache_data
-def load_data():
+def load_data(data_version, recommendations_version):
+    del data_version, recommendations_version
     data = pd.read_csv(DATA_PATH)
     recommendations = pd.read_csv(RECOMMENDATIONS_PATH)
     return data, recommendations
 
 
 def format_currency(value):
-    return f"${value:,.0f}"
+    return f"INR {value:,.0f}"
 
 
 def format_percent(value):
@@ -112,7 +113,9 @@ st.markdown(
 )
 
 try:
-    df, recommendations = load_data()
+    data_version = DATA_PATH.stat().st_mtime_ns
+    recommendations_version = RECOMMENDATIONS_PATH.stat().st_mtime_ns
+    df, recommendations = load_data(data_version, recommendations_version)
 except FileNotFoundError as error:
     st.error(f"Dashboard data is missing: {error.filename}")
     st.stop()
