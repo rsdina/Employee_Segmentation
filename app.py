@@ -152,7 +152,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.markdown("### Dashboard")
-    page = st.radio("Navigate", ["Overview", "3D Workforce Map", "Segment Profile", "Employee Detail"], label_visibility="collapsed")
+    page = st.radio("Navigate", ["Overview", "Segment Profile", "Employee Detail"], label_visibility="collapsed")
     st.markdown("### Filters")
     departments = st.multiselect("Department", sorted(df["Department"].dropna().unique()), default=[])
     segments = st.multiselect("Segment", sorted(df["Segment"].dropna().unique()), default=[])
@@ -237,37 +237,23 @@ if page == "Overview":
         fig.update_coloraxes(colorbar_tickformat=".0%", colorbar_title="Attrition")
         st.plotly_chart(style_plot(fig, 350), width="stretch", config={"displayModeBar": False})
     with lower_right:
-        st.markdown("<div class='section-title'>Workload and performance</div>", unsafe_allow_html=True)
-        fig = px.scatter(filtered.sample(min(len(filtered), 3000), random_state=42), x="Overtime_Hours", y="Performance_Rating", size="Employee_Satisfaction", color="Segment", color_discrete_map=SEGMENT_COLORS, hover_data=["Department", "Annual_Salary", "Attrition"], opacity=.7)
-        fig.update_layout(showlegend=True, legend_title_text="")
-        st.plotly_chart(style_plot(fig, 350), width="stretch", config={"displayModeBar": False})
-
-elif page == "3D Workforce Map":
-    st.markdown("<div class='section-title'>Workforce constellation</div>", unsafe_allow_html=True)
-    st.markdown("<div class='view-intro'>Rotate the scene to explore how age, overtime pressure, and performance separate the workforce. Point size reflects satisfaction; color identifies the employee segment.</div>", unsafe_allow_html=True)
-    map_data = filtered.sample(min(len(filtered), 3500), random_state=42)
-    fig = px.scatter_3d(
-        map_data,
-        x="Age",
-        y="Overtime_Hours",
-        z="Performance_Rating",
-        size="Employee_Satisfaction",
-        color="Segment",
-        color_discrete_map=SEGMENT_COLORS,
-        hover_name="EmpId",
-        hover_data=["Department", "Annual_Salary", "Employee_Satisfaction", "Attrition"],
-        opacity=.72,
-    )
-    fig.update_traces(marker={"line": {"color": "rgba(243,247,248,.35)", "width": .35}})
-    st.plotly_chart(style_3d_plot(fig), width="stretch", config={"displayModeBar": True, "displaylogo": False})
-    st.markdown("<div class='section-title'>Reading the map</div>", unsafe_allow_html=True)
-    read_left, read_middle, read_right = st.columns(3, gap="medium")
-    with read_left:
-        st.markdown(f"<div class='view-intro'><b style='color:{COLORS['cyan']}'>X axis</b><br>Age and tenure context across the active workforce.</div>", unsafe_allow_html=True)
-    with read_middle:
-        st.markdown(f"<div class='view-intro'><b style='color:{COLORS['coral']}'>Y axis</b><br>Overtime pressure and workload intensity.</div>", unsafe_allow_html=True)
-    with read_right:
-        st.markdown(f"<div class='view-intro'><b style='color:{COLORS['magenta']}'>Z axis</b><br>Performance rating, with satisfaction shown by point size.</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-title'>3D workforce morphology</div>", unsafe_allow_html=True)
+        st.markdown("<div class='view-intro'>Rotate the scene directly inside the executive view. Age, overtime pressure, and performance form the three dimensions; satisfaction controls point size and segment controls color.</div>", unsafe_allow_html=True)
+        map_data = filtered.sample(min(len(filtered), 3500), random_state=42)
+        fig = px.scatter_3d(
+            map_data,
+            x="Age",
+            y="Overtime_Hours",
+            z="Performance_Rating",
+            size="Employee_Satisfaction",
+            color="Segment",
+            color_discrete_map=SEGMENT_COLORS,
+            hover_name="EmpId",
+            hover_data=["Department", "Annual_Salary", "Employee_Satisfaction", "Attrition"],
+            opacity=.72,
+        )
+        fig.update_traces(marker={"line": {"color": "rgba(243,247,248,.35)", "width": .35}})
+        st.plotly_chart(style_3d_plot(fig, 350), width="stretch", config={"displayModeBar": True, "displaylogo": False})
 
 elif page == "Segment Profile":
     st.markdown("<div class='section-title'>Segment comparison</div>", unsafe_allow_html=True)
