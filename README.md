@@ -1,6 +1,6 @@
 # HR Analytics: Employee Segmentation and Workforce Intelligence
 
-An end-to-end HR analytics project that transforms employee activity and workforce data into actionable employee segments, attrition-risk signals, and intervention recommendations. The repository contains the original Google Colab analysis, the trained clustering model, generated analytical outputs, SQL templates, and a Power BI dashboard specification.
+An end-to-end HR analytics project that transforms employee activity and workforce data into actionable employee segments, attrition-risk signals, and intervention recommendations. The repository contains the original Google Colab analysis, the trained clustering model, generated analytical outputs, SQL templates, and a Streamlit dashboard.
 
 ## Business Purpose
 
@@ -32,7 +32,7 @@ data/
 models/
 	employee_segmentation_model.pkl      Trained clustering model
 results/
-	employee_segmentation_results.csv    Power BI-ready employee-level fact table
+	employee_segmentation_results.csv    Streamlit-ready employee-level fact table
 	cluster_profile.csv                  Cluster-level averages
 	segment_details.csv                  Segment statistics
 	segment_mapping.csv                  Cluster-to-segment labels
@@ -42,9 +42,8 @@ results/
 	*.png                                Exploratory and segmentation charts
 sql/
 	hr_analysis_queries.sql              Reusable analytical SQL queries
-powerbi/
-	HR_Analytics_Dashboard_Spec.md       Page, visual, and DAX build specification
-	HR_Analytics_Theme.json              Theme matching the supplied dashboard reference
+app.py                                  Streamlit HR analytics dashboard
+requirements.txt                        Dashboard runtime dependencies
 Employee_Segmentation.ipynb             Reproducible Google Colab workflow
 ```
 
@@ -57,38 +56,34 @@ Employee_Segmentation.ipynb             Reproducible Google Colab workflow
 5. Train the final four-cluster K-Means model with `random_state=42`.
 6. Map model clusters to business-friendly segment names.
 7. Calculate segment profiles, attrition risk, recommendations, and PCA outputs.
-8. Export the results consumed by Power BI.
+8. Export the results consumed by the Streamlit dashboard.
 
-The canonical dashboard source is `results/employee_segmentation_results.csv`, not the original raw CSV. It contains the engineered features and final `Segment` label required by the report.
+The canonical dashboard source is `results/employee_segmentation_results.csv`, not the original raw CSV. It contains the engineered features and final `Segment` label required by the app.
 
-## Power BI Dashboard
+## Streamlit Dashboard
 
-The dashboard implementation guide is in [powerbi/HR_Analytics_Dashboard_Spec.md](powerbi/HR_Analytics_Dashboard_Spec.md). It defines a single-page executive dashboard inspired by the supplied reference image:
+Run the dashboard locally with:
 
-- Dark teal workspace with a compact left navigation rail.
-- KPI tiles for workforce size, attrition, average salary, and engagement.
-- Segment distribution and attrition-risk visuals.
-- Department comparison and workload/performance analysis.
-- A recommendation panel that responds to the selected segment.
-- Slicers for department, segment, attrition, and employee profile.
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-Import [powerbi/HR_Analytics_Theme.json](powerbi/HR_Analytics_Theme.json) in Power BI Desktop before creating visuals. Use `results/employee_segmentation_results.csv` as the main table and set `EmpId` to Text or Whole Number consistently across the model.
+The app follows the supplied dashboard reference with a dark teal canvas, compact navigation rail, KPI tiles, segment distribution, attrition-risk analysis, department comparison, workload/performance analysis, filters, and an adaptive recommendations panel.
 
-## Making the Dashboard Live
+## Making the Dashboard Permanently Live
 
-Power BI Desktop is required to create the report, and Power BI Service is required to keep it accessible online. A local path such as `D:\HR_Segmentation_result` cannot be used as a permanently refreshing cloud source by itself.
+The simplest hosting option is Streamlit Community Cloud:
 
-Recommended deployment:
+1. Push this repository to GitHub.
+2. Open [share.streamlit.io](https://share.streamlit.io/) and sign in with GitHub.
+3. Select `rsdina/Employee_Segmentation`, branch `main`, and file `app.py`.
+4. Deploy the app. Streamlit installs packages from `requirements.txt` and reads the committed result CSV.
+5. Share the generated public or private app URL.
 
-1. Build the report in Power BI Desktop using the dashboard specification.
-2. Publish the report and semantic model to a Power BI workspace backed by Power BI Pro, Premium Per User, or Fabric capacity.
-3. Store the CSV in SharePoint/OneDrive or load it into a supported database for a cloud-stable source.
-4. Configure dataset credentials and scheduled refresh in the Power BI Service.
-5. Configure row-level security if the report will expose employee-level records.
-6. Share the report through an app or workspace with the intended HR audience.
-7. Pin the report to a dashboard or embed it in the organization portal.
+For a private production deployment, use Streamlit Community Cloud private sharing, Streamlit Enterprise, or deploy the same app to an organization-managed container platform. Employee-level HR data should not be exposed through a public URL.
 
-For a static snapshot, publishing the imported dataset is sufficient. For ongoing updates, use SharePoint/OneDrive or a database; a local-file gateway is possible but requires a continuously available gateway machine and is less resilient.
+The current app is a static snapshot of the committed analysis results. To refresh it, replace the result CSV through the analysis pipeline and push the updated file; Streamlit Cloud will redeploy from GitHub. For automated refresh, move the data source to a database or scheduled pipeline and update `app.py` to query it.
 
 ## Reproducing the Analysis
 
