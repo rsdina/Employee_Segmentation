@@ -81,6 +81,9 @@ The simplest hosting option is Streamlit Community Cloud:
 4. Deploy the app. Streamlit installs packages from `requirements.txt` and reads the committed result CSV.
 5. Share the generated public or private app URL.
 
+## Live Dashboard
+https://employeesegmentation-rep6z9h6nckgwcfxwoy5bc.streamlit.app/
+
 For a private production deployment, use Streamlit Community Cloud private sharing, Streamlit Enterprise, or deploy the same app to an organization-managed container platform. Employee-level HR data should not be exposed through a public URL.
 
 The current app is a static snapshot of the committed analysis results. To refresh it, replace the result CSV through the analysis pipeline and push the updated file; Streamlit Cloud will redeploy from GitHub. For automated refresh, move the data source to a database or scheduled pipeline and update `app.py` to query it.
