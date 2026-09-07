@@ -1,0 +1,6 @@
+,Age,Age,Annual_Salary,Annual_Salary,Company_Tenure,Company_Tenure,Performance_Rating,Performance_Rating,Employee_Satisfaction,Employee_Satisfaction,Overtime_Hours,Overtime_Hours,Training_Hours,Training_Hours,Absenteeism_Days,Absenteeism_Days,Attrition,Attrition
+,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std
+Segment,,,,,,,,,,,,,,,,,,
+Emerging Talent,27.71,0.52,47652.77,28661.27,2.71,0.52,6.82,1.65,6.52,2.04,189.61,45.73,17.08,5.23,2.37,0.57,0.17,0.38
+Needs Improvement,29.66,0.74,47139.67,29829.39,4.66,0.74,7.96,1.62,5.15,3.12,226.88,50.0,23.35,6.16,2.84,0.63,0.45,0.5
+Stable Employees,30.23,2.84,210055.91,122648.16,5.23,2.84,7.06,1.59,6.46,2.24,199.65,47.81,18.89,5.23,2.5,0.6,0.04,0.19

@@ -1,0 +1,28 @@
+{
+    "total_employees": 14999,
+    "num_segments": 4,
+    "segments": {
+        "0": "Stable Employees",
+        "1": "Emerging Talent",
+        "2": "Stable Employees",
+        "3": "Needs Improvement"
+    },
+    "features_used": [
+        "Age",
+        "Annual_Salary",
+        "Company_Tenure",
+        "Performance_Rating",
+        "Employee_Satisfaction",
+        "Overtime_Hours",
+        "number_of_projects",
+        "Training_Hours",
+        "Absenteeism_Days",
+        "Engagement_Index",
+        "Performance_Index"
+    ],
+    "scaler_type": "<class 'sklearn.preprocessing._data.RobustScaler'>",
+    "pca_explained_variance": [
+        0.4932642976349005,
+        0.1922076054489835
+    ]
+}
