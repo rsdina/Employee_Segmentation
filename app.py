@@ -138,7 +138,7 @@ with st.sidebar:
     min_age, max_age = int(df["Age"].min()), int(df["Age"].max())
     age_range = st.slider("Age range", min_age, max_age, (min_age, max_age))
     show_attrition_only = st.toggle("Attrition cases only", value=False)
-    if st.button("Reset filters", use_container_width=True):
+    if st.button("Reset filters", width="stretch"):
         st.rerun()
     st.markdown("<div class='footer-note'>Source: employee_segmentation_results.csv<br>Analysis snapshot: 14,999 employees</div>", unsafe_allow_html=True)
 
@@ -185,7 +185,7 @@ if page == "Overview":
         segment_counts["Color"] = segment_counts["Segment"].map(SEGMENT_COLORS)
         fig = px.pie(segment_counts, names="Segment", values="Employees", hole=.65, color="Segment", color_discrete_map=SEGMENT_COLORS)
         fig.update_traces(textposition="outside", textinfo="percent", marker={"line": {"color": COLORS["background"], "width": 2}})
-        st.plotly_chart(style_plot(fig, 295), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(style_plot(fig, 295), width="stretch", config={"displayModeBar": False})
     with middle:
         st.markdown("<div class='section-title'>Attrition risk by segment</div>", unsafe_allow_html=True)
         risk = filtered.groupby("Segment", as_index=False).agg(Attrition=("Attrition", "mean"), Employees=("EmpId", "nunique"))
@@ -194,7 +194,7 @@ if page == "Overview":
         fig.update_traces(texttemplate="%{text:.0%}", textposition="outside")
         fig.update_xaxes(tickformat=".0%", range=[0, max(.5, risk["Attrition"].max() * 1.2)])
         fig.update_layout(showlegend=False)
-        st.plotly_chart(style_plot(fig, 295), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(style_plot(fig, 295), width="stretch", config={"displayModeBar": False})
     with right:
         priority = filtered.groupby("Segment").agg(Attrition=("Attrition", "mean"), Overtime=("Overtime_Hours", "mean"), Satisfaction=("Employee_Satisfaction", "mean")).sort_values("Attrition", ascending=False).reset_index().iloc[0]
         segment_recommendation = recommendations[recommendations["Segment"] == priority["Segment"]]
@@ -213,12 +213,12 @@ if page == "Overview":
         department_counts = department_counts.sort_values("Employees")
         fig = px.bar(department_counts, x="Employees", y="Department", orientation="h", color="Attrition", color_continuous_scale=[COLORS["mint"], COLORS["gold"], COLORS["coral"]])
         fig.update_coloraxes(colorbar_tickformat=".0%", colorbar_title="Attrition")
-        st.plotly_chart(style_plot(fig, 350), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(style_plot(fig, 350), width="stretch", config={"displayModeBar": False})
     with lower_right:
         st.markdown("<div class='section-title'>Workload and performance</div>", unsafe_allow_html=True)
         fig = px.scatter(filtered.sample(min(len(filtered), 3000), random_state=42), x="Overtime_Hours", y="Performance_Rating", size="Employee_Satisfaction", color="Segment", color_discrete_map=SEGMENT_COLORS, hover_data=["Department", "Annual_Salary", "Attrition"], opacity=.7)
         fig.update_layout(showlegend=True, legend_title_text="")
-        st.plotly_chart(style_plot(fig, 350), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(style_plot(fig, 350), width="stretch", config={"displayModeBar": False})
 
 elif page == "Segment Profile":
     st.markdown("<div class='section-title'>Segment comparison</div>", unsafe_allow_html=True)
@@ -231,15 +231,15 @@ elif page == "Segment Profile":
         Overtime=("Overtime_Hours", "mean"),
         Tenure=("Company_Tenure", "mean"),
     )
-    st.dataframe(profile.style.format({"Attrition": "{:.1%}", "Salary": "${:,.0f}", "Satisfaction": "{:.2f}", "Performance": "{:.2f}", "Overtime": "{:.1f}", "Tenure": "{:.1f}"}), use_container_width=True, hide_index=True)
+    st.dataframe(profile.style.format({"Attrition": "{:.1%}", "Salary": "INR {:,.0f}", "Satisfaction": "{:.2f}", "Performance": "{:.2f}", "Overtime": "{:.1f}", "Tenure": "{:.1f}"}), width="stretch", hide_index=True)
     chart_left, chart_right = st.columns(2, gap="medium")
     with chart_left:
         fig = px.bar(profile.sort_values("Salary"), x="Salary", y="Segment", orientation="h", color="Segment", color_discrete_map=SEGMENT_COLORS, title="Average salary")
-        st.plotly_chart(style_plot(fig, 350), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(style_plot(fig, 350), width="stretch", config={"displayModeBar": False})
     with chart_right:
         fig = px.bar(profile.sort_values("Performance"), x="Performance", y="Segment", orientation="h", color="Segment", color_discrete_map=SEGMENT_COLORS, title="Average performance")
         fig.update_xaxes(range=[0, 10])
-        st.plotly_chart(style_plot(fig, 350), use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(style_plot(fig, 350), width="stretch", config={"displayModeBar": False})
 
 else:
     st.markdown("<div class='section-title'>Employee detail</div>", unsafe_allow_html=True)
@@ -249,6 +249,6 @@ else:
         search_text = search.lower()
         detail = detail[detail["EmpId"].astype(str).str.lower().str.contains(search_text) | detail["Department"].str.lower().str.contains(search_text)]
     display_columns = ["EmpId", "Department", "Segment", "Annual_Salary", "Performance_Rating", "Employee_Satisfaction", "Overtime_Hours", "Absenteeism_Days", "Attrition"]
-    st.dataframe(detail[display_columns].rename(columns={"EmpId": "Employee ID", "Annual_Salary": "Annual salary", "Performance_Rating": "Performance", "Employee_Satisfaction": "Satisfaction", "Overtime_Hours": "Overtime hours", "Absenteeism_Days": "Absenteeism days"}), use_container_width=True, hide_index=True, height=520)
+    st.dataframe(detail[display_columns].rename(columns={"EmpId": "Employee ID", "Annual_Salary": "Annual salary", "Performance_Rating": "Performance", "Employee_Satisfaction": "Satisfaction", "Overtime_Hours": "Overtime hours", "Absenteeism_Days": "Absenteeism days"}), width="stretch", hide_index=True, height=520)
 
 st.markdown("<div class='footer-note'>HR Analytics | Employee segmentation model snapshot | Use employee-level views only with appropriate access controls.</div>", unsafe_allow_html=True)
