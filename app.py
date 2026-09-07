@@ -67,6 +67,24 @@ def style_plot(fig, height=300):
     return fig
 
 
+def style_3d_plot(fig, height=620):
+    fig.update_layout(
+        height=height,
+        margin={"l": 0, "r": 0, "t": 28, "b": 0},
+        paper_bgcolor="rgba(0,0,0,0)",
+        font={"family": "DM Sans, sans-serif", "color": COLORS["text"]},
+        legend={"font": {"color": COLORS["muted"]}},
+        scene={
+            "bgcolor": "rgba(0,0,0,0)",
+            "xaxis": {"title": "Age", "gridcolor": "#35616A", "color": COLORS["muted"]},
+            "yaxis": {"title": "Overtime hours", "gridcolor": "#35616A", "color": COLORS["muted"]},
+            "zaxis": {"title": "Performance rating", "gridcolor": "#35616A", "color": COLORS["muted"]},
+            "camera": {"eye": {"x": 1.55, "y": 1.55, "z": 1.15}},
+        },
+    )
+    return fig
+
+
 def card(label, value, accent):
     st.markdown(
         f"""
@@ -84,25 +102,28 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
     :root { --bg: #102E3A; --panel: #173E49; --text: #F3F7F8; --muted: #A9C6CA; --cyan: #18C7C9; }
-    .stApp { background: var(--bg); color: var(--text); }
+    .stApp { background: radial-gradient(circle at 85% 0%, #1A4650 0%, var(--bg) 42%); color: var(--text); }
     .block-container { padding: 1.35rem 2.3rem 2rem; max-width: 1500px; }
-    [data-testid="stSidebar"] { background: #0B2731; border-right: 1px solid #28535C; }
+    [data-testid="stSidebar"] { background: linear-gradient(180deg, #0B2731 0%, #102E3A 100%); border-right: 1px solid #28535C; }
     [data-testid="stSidebar"] > div:first-child { padding: 1.4rem 1rem; }
     h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; letter-spacing: 0; }
     p, div, label, span { font-family: 'DM Sans', sans-serif; letter-spacing: 0; }
     .brand { padding: .5rem .3rem 1.7rem; border-bottom: 1px solid #28535C; margin-bottom: 1.5rem; }
     .brand-title { color: var(--text); font: 700 1.25rem 'Space Grotesk'; letter-spacing: .08em; }
     .brand-subtitle { color: var(--cyan); font-size: .65rem; letter-spacing: .18em; margin-top: .25rem; }
-    .metric-card { background: var(--panel); border: 1px solid #2B5962; border-top: 3px solid; border-radius: 7px; padding: 1rem 1.1rem .85rem; min-height: 92px; }
+    .metric-card { background: linear-gradient(145deg, rgba(34,79,88,.95), rgba(18,54,65,.95)); border: 1px solid #376772; border-top: 3px solid; border-radius: 9px; box-shadow: 0 12px 26px rgba(0,0,0,.16); padding: 1rem 1.1rem .85rem; min-height: 92px; }
     .metric-label { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; }
     .metric-value { color: var(--text); font: 700 1.75rem 'Space Grotesk'; margin-top: .45rem; }
-    .section-title { color: var(--text); font: 600 1rem 'Space Grotesk'; margin: 1.1rem 0 .4rem; }
+    .section-title { color: var(--text); font: 600 1rem 'Space Grotesk'; margin: 1.1rem 0 .4rem; letter-spacing: .01em; }
     .section-caption { color: var(--muted); font-size: .78rem; margin-bottom: .6rem; }
     .insight { background: linear-gradient(135deg, #1B4652, #26394C); border: 1px solid #3B6670; border-left: 3px solid #F5795B; border-radius: 7px; padding: 1rem 1.1rem; min-height: 170px; }
     .insight-kicker { color: #F5795B; font-size: .7rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
     .insight-title { color: var(--text); font: 600 1.1rem 'Space Grotesk'; margin: .35rem 0 .5rem; }
     .insight-copy { color: var(--muted); font-size: .82rem; line-height: 1.45; }
     .footer-note { color: #71949A; font-size: .72rem; margin-top: 1.5rem; }
+    .hero-meta { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; margin: -.2rem 0 1.1rem; }
+    .hero-meta b { color: var(--cyan); font-weight: 600; }
+    .view-intro { background: rgba(23,62,73,.58); border: 1px solid #315E68; border-radius: 9px; padding: .85rem 1rem; color: var(--muted); font-size: .82rem; line-height: 1.45; margin-bottom: .8rem; }
     div[data-testid="stMetric"] { background: var(--panel); border: 1px solid #2B5962; border-radius: 7px; padding: .6rem .8rem; }
     div[data-testid="stMetricLabel"] { color: var(--muted); }
     div[data-testid="stMetricValue"] { color: var(--text); }
@@ -131,7 +152,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.markdown("### Dashboard")
-    page = st.radio("Navigate", ["Overview", "Segment Profile", "Employee Detail"], label_visibility="collapsed")
+    page = st.radio("Navigate", ["Overview", "3D Workforce Map", "Segment Profile", "Employee Detail"], label_visibility="collapsed")
     st.markdown("### Filters")
     departments = st.multiselect("Department", sorted(df["Department"].dropna().unique()), default=[])
     segments = st.multiselect("Segment", sorted(df["Segment"].dropna().unique()), default=[])
@@ -165,6 +186,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.title("Employee Segmentation Overview")
+st.markdown(f"<div class='hero-meta'><b>LIVE MODEL SNAPSHOT</b> &nbsp;&nbsp;|&nbsp;&nbsp; {employee_count:,} employees in view &nbsp;&nbsp;|&nbsp;&nbsp; {len(filtered['Segment'].unique())} active segments</div>", unsafe_allow_html=True)
 st.markdown("<div class='section-caption'>A focused view of workforce composition, retention pressure, and the actions most likely to improve employee outcomes.</div>", unsafe_allow_html=True)
 
 if page == "Overview":
@@ -219,6 +241,33 @@ if page == "Overview":
         fig = px.scatter(filtered.sample(min(len(filtered), 3000), random_state=42), x="Overtime_Hours", y="Performance_Rating", size="Employee_Satisfaction", color="Segment", color_discrete_map=SEGMENT_COLORS, hover_data=["Department", "Annual_Salary", "Attrition"], opacity=.7)
         fig.update_layout(showlegend=True, legend_title_text="")
         st.plotly_chart(style_plot(fig, 350), width="stretch", config={"displayModeBar": False})
+
+elif page == "3D Workforce Map":
+    st.markdown("<div class='section-title'>Workforce constellation</div>", unsafe_allow_html=True)
+    st.markdown("<div class='view-intro'>Rotate the scene to explore how age, overtime pressure, and performance separate the workforce. Point size reflects satisfaction; color identifies the employee segment.</div>", unsafe_allow_html=True)
+    map_data = filtered.sample(min(len(filtered), 3500), random_state=42)
+    fig = px.scatter_3d(
+        map_data,
+        x="Age",
+        y="Overtime_Hours",
+        z="Performance_Rating",
+        size="Employee_Satisfaction",
+        color="Segment",
+        color_discrete_map=SEGMENT_COLORS,
+        hover_name="EmpId",
+        hover_data=["Department", "Annual_Salary", "Employee_Satisfaction", "Attrition"],
+        opacity=.72,
+    )
+    fig.update_traces(marker={"line": {"color": "rgba(243,247,248,.35)", "width": .35}})
+    st.plotly_chart(style_3d_plot(fig), width="stretch", config={"displayModeBar": True, "displaylogo": False})
+    st.markdown("<div class='section-title'>Reading the map</div>", unsafe_allow_html=True)
+    read_left, read_middle, read_right = st.columns(3, gap="medium")
+    with read_left:
+        st.markdown(f"<div class='view-intro'><b style='color:{COLORS['cyan']}'>X axis</b><br>Age and tenure context across the active workforce.</div>", unsafe_allow_html=True)
+    with read_middle:
+        st.markdown(f"<div class='view-intro'><b style='color:{COLORS['coral']}'>Y axis</b><br>Overtime pressure and workload intensity.</div>", unsafe_allow_html=True)
+    with read_right:
+        st.markdown(f"<div class='view-intro'><b style='color:{COLORS['magenta']}'>Z axis</b><br>Performance rating, with satisfaction shown by point size.</div>", unsafe_allow_html=True)
 
 elif page == "Segment Profile":
     st.markdown("<div class='section-title'>Segment comparison</div>", unsafe_allow_html=True)
