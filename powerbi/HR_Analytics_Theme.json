@@ -1,0 +1,39 @@
+{
+  "name": "HR Analytics Teal",
+  "dataColors": [
+    "#18C7C9",
+    "#F5795B",
+    "#B72D8C",
+    "#F4C95D",
+    "#6CD7B5",
+    "#4B9BD5"
+  ],
+  "background": "#102E3A",
+  "foreground": "#F3F7F8",
+  "tableAccent": "#18C7C9",
+  "good": "#6CD7B5",
+  "neutral": "#F4C95D",
+  "bad": "#F5795B",
+  "textClasses": {
+    "callout": {
+      "fontFace": "Aptos Display",
+      "fontSize": 28,
+      "color": "#F3F7F8"
+    },
+    "title": {
+      "fontFace": "Aptos Display",
+      "fontSize": 14,
+      "color": "#F3F7F8"
+    },
+    "header": {
+      "fontFace": "Aptos",
+      "fontSize": 11,
+      "color": "#B7D1D5"
+    },
+    "label": {
+      "fontFace": "Aptos",
+      "fontSize": 10,
+      "color": "#B7D1D5"
+    }
+  }
+}
